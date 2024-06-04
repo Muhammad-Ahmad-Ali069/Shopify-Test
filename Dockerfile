@@ -31,8 +31,18 @@ RUN chmod 755 -R /app
 RUN chmod -R o+w storage
 RUN chmod -R o+w bootstrap
 RUN chmod -R o+w public
+
 RUN addgroup www-data nginx
-RUN adduser subAdmin
+
+RUN chmod 750 /var/lib/nginx
+RUN chgrp -R www-data /var/lib/nginx
+
+
+# RUN adduser subAdmin
+RUN adduser -D subAdmin
+
+RUN passwd -u subAdmin
+
 RUN cd /app/frontend
 RUN npm install
 RUN SHOPIFY_API_KEY=$SHOPIFY_API_KEY npm run build
