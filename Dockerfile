@@ -17,10 +17,11 @@ RUN mv "$PHP_INI_DIR/php.ini-production" "$PHP_INI_DIR/php.ini"
 RUN touch /app/storage/db.sqlite
 RUN chown www-data:www-data /app/storage/db.sqlite
 # RUN cd frontend && npm install && npm run build
+
 # RUN composer build
 RUN curl -sS https://getcomposer.org/download/2.5.0/composer.phar -o composer.phar
 RUN php composer.phar install --ignore-platform-req=ext-zip
-RUN cp /app/.env.production /app/.env
+RUN cp /app/.env.example /app/.env
 RUN php artisan key:generate
 RUN php artisan migrate --force
 
@@ -32,7 +33,8 @@ RUN chmod -R o+w bootstrap
 RUN chmod -R o+w public
 RUN addgroup www-data nginx
 RUN adduser subAdmin
-RUN cd frontend
+RUN cd /app/frontend
+RUN npm install
 RUN SHOPIFY_API_KEY=$SHOPIFY_API_KEY npm run build
 RUN cd /app
 RUN su - subAdmin
